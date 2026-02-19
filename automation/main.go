@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -48,7 +49,8 @@ func fetchWorld() error {
 
 func startServer() (*exec.Cmd, io.WriteCloser, error) {
 	cmd := exec.Command("java", "-Xmx4G", "-Xms4G", "-jar", "server.jar", "nogui")
-	cmd.Stdout, cmd.Stderr, cmd.Dir = os.Stdout, os.Stderr, "/home/mc-server-user/server-app"
+	serverJarPath := filepath.Join(os.Getenv("SERVER_JAR_PATH"), "/server.jar")
+	cmd.Stdout, cmd.Stderr, cmd.Dir = os.Stdout, os.Stderr, serverJarPath
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
