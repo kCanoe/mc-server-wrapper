@@ -1,0 +1,19 @@
+[Unit]
+Description=Minecraft server automation wrapper
+After=network.target
+
+[Service]
+User=mc-server-User
+WorkingDirectory=/home/mc-server-user/mc-server/mc-server-wrapper/automation
+
+ExecStart=/home/mc-server-user/mc-server/mc-server-wrapper/automation/automation
+
+KillMode=process
+
+TimeoutStopSec=90
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
