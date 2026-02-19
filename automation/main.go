@@ -48,7 +48,7 @@ func fetchWorld() error {
 
 func startServer() (*exec.Cmd, io.WriteCloser, error) {
 	cmd := exec.Command("java", "-Xmx4G", "-Xms4G", "-jar", "server.jar", "nogui")
-	cmd.Stdout, cmd.Stderr, cmd.Dir = os.Stdout, os.Stderr, "/home/kanoalathamj/server-app"
+	cmd.Stdout, cmd.Stderr, cmd.Dir = os.Stdout, os.Stderr, "/home/mc-server-user/server-app"
 
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
