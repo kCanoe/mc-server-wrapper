@@ -51,6 +51,8 @@ func startServer() (*exec.Cmd, io.WriteCloser, error) {
 	serverJarPath := os.Getenv("SERVER_JAR_PATH")
 	cmd.Stdout, cmd.Stderr, cmd.Dir = os.Stdout, os.Stderr, serverJarPath
 
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return cmd, nil, fmt.Errorf("failed to acquire pipe for server process: %w", err)
@@ -65,9 +67,11 @@ func startServer() (*exec.Cmd, io.WriteCloser, error) {
 
 func shutdownServer(cmd *exec.Cmd, stdin io.WriteCloser) error {
 	fmt.Println("sending stop command to server process")
+
 	if _, err := io.WriteString(stdin, "stop\n"); err != nil {
 		return fmt.Errorf("error writing to server process stdin: %w", err)
 	}
+
 	if err := cmd.Wait(); err != nil {
 		return fmt.Errorf("server process failed to close: %w", err)
 	}
