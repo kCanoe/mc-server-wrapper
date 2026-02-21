@@ -10,7 +10,7 @@ ExecStart=/home/mc-server-user/mc-server/mc-server-wrapper/automation/automation
 
 KillMode=process
 
-TimeoutStopSec=90
+TimeoutStopSec=240
 
 Restart=always
 RestartSec=10
