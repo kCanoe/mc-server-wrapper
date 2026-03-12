@@ -10,7 +10,6 @@ import (
 	"os/exec"
 	"os/signal"
 	"path"
-	"strings"
 	"syscall"
 	"time"
 
@@ -111,22 +110,20 @@ func uploadFile(bucket, object, file string) error {
 func backupWorld() error {
 	// compress the world files
 	// create name - mc-world-[date]-[time].tar.gz
-	timeString := time.Now().Format("2006-01-02T15:04:05")
-	cleanTimeString := strings.ReplaceAll(timeString, ":", "-")
-	nameString := "mc-world-backup" + "-" + cleanTimeString + ".tar.xz"
+	nameString := "temp-world-backup" + ".tar"
 
 	fmt.Println("compressing world files")
 	worldDir := os.Getenv("WORLD_NAME")
-	compressCmd := exec.Command("tar", "-cJvf", nameString, worldDir)
+	compressCmd := exec.Command("tar", "-cvf", nameString, worldDir)
 	compressCmd.Dir = os.Getenv("SERVER_JAR_PATH")
 	if err := compressCmd.Run(); err != nil {
 		return fmt.Errorf("failed to compress world files: %w", err)
 	}
 
-	//(todo) upload the world files to gcs
 	fmt.Println("uploading world files to storage bucket")
+	objectNameString := "backups-temp/" + nameString
 	filePath := path.Join(os.Getenv("SERVER_JAR_PATH"), nameString)
-	uploadFile("world-archives", nameString, filePath)
+	uploadFile("world-archives", objectNameString, filePath)
 
 	// clean up world files tar ball
 	fmt.Println("cleaning up local archive file")
