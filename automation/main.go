@@ -112,18 +112,17 @@ func backupWorld() error {
 	// create name - mc-world-[date]-[time].tar.gz
 	nameString := "temp-world-backup" + ".tar"
 
-	fmt.Println("compressing world files")
+	fmt.Println("bundling world files")
 	worldDir := os.Getenv("WORLD_NAME")
 	compressCmd := exec.Command("tar", "-cvf", nameString, worldDir)
 	compressCmd.Dir = os.Getenv("SERVER_JAR_PATH")
 	if err := compressCmd.Run(); err != nil {
-		return fmt.Errorf("failed to compress world files: %w", err)
+		return fmt.Errorf("failed to bundle world files: %w", err)
 	}
 
 	fmt.Println("uploading world files to storage bucket")
-	objectNameString := "backups-temp/" + nameString
 	filePath := path.Join(os.Getenv("SERVER_JAR_PATH"), nameString)
-	uploadFile("world-archives", objectNameString, filePath)
+	uploadFile("temp-world-archives", nameString, filePath)
 
 	// clean up world files tar ball
 	fmt.Println("cleaning up local archive file")
